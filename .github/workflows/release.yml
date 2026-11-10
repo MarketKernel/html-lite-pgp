@@ -51,4 +51,5 @@ jobs:
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes "One file, nothing else needed. Check it: \`sha256sum -c SHA256SUMS.txt\`, or build it again from this tag (\`node --run build\`) — the bytes are the same."
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes "One file, nothing else needed. Check it: \`sha256sum -c SHA256SUMS.txt\`, or build it again from this tag (\`node --run build\`) — the bytes are the same."
