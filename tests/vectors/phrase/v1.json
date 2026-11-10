@@ -1,0 +1,37 @@
+[
+  {
+    "phrase": "Я иду в лес и пою песню",
+    "email": " Test@Example.org ",
+    "normalized": "я иду в лес и пою песню",
+    "ed25519": "5ea072dba8a4207071c0dc6938d1fc198336bb41e1eb565cb936a11d3b8ab9bf",
+    "cv25519": "0eb1b7ffde6ca9caebb3a44446c80d5a8afa575c7d260b32ee720135087dfd2b"
+  },
+  {
+    "phrase": "The quick  brown\tfox jumps over",
+    "email": "test@example.org",
+    "normalized": "the quick brown fox jumps over",
+    "ed25519": "9ad89905322f93b479761286c7bff7382cb5ad3a6c0f1fe25fa51b4f86e3d31d",
+    "cv25519": "2235421baa872d95f9379f84726218371f7b5f4b0e9cbf8c7db1e497899e5852"
+  },
+  {
+    "phrase": "我今天去北京看朋友吃饭",
+    "email": "zh@example.org",
+    "normalized": "我今天去北京看朋友吃饭",
+    "ed25519": "52fcc06976619ca01272420de5862b62ac183cb654b9445983e6946f76dd9b31",
+    "cv25519": "c45512b476b1d39b728fe51be2d72ec5ca8741195556e7ea6e083f446bb7393d"
+  },
+  {
+    "phrase": "أنا ذاهب إلى السوق اليوم صباحا",
+    "email": "ar@example.org",
+    "normalized": "أنا ذاهب إلى السوق اليوم صباحا",
+    "ed25519": "468f4f0d669c1cc07cad3e5d9b5e557289cbe8b555d94ac6f96b68eff9092ed8",
+    "cv25519": "bf71078ef182c9a60110eded0571ca3e2fde34d984954c9de2048675ff2ff844"
+  },
+  {
+    "phrase": "İstanbul’da güzel bir gün geçirdik",
+    "email": "tr@example.org",
+    "normalized": "i̇stanbul’da güzel bir gün geçirdik",
+    "ed25519": "9ed646f9138e7b1e3f401806d1b1f37aeeec54ddc3ad1ac1671c29b9e0c7fb1a",
+    "cv25519": "d2019c56ba49becf00a9a16f475ddd0fd52f2734b5b74baf19f74182cc00754d"
+  }
+]

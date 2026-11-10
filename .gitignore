@@ -1,0 +1,21 @@
+.DS_Store
+build/
+node_modules/
+shots/
+private/
+CLAUDE.md
+Task*.md
+
+# Keys, signatures and keyring containers saved while trying the app by hand. Only at the
+# root: the GnuPG fixtures under tests/ use the same extensions and must stay.
+/*.asc
+/*.gpg
+/*.pgp
+/*.sig
+/*.rev
+
+# Editors and local agent settings
+.vscode/
+.idea/
+.claude/settings.local.json
+*.log

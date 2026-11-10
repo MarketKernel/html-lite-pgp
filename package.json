@@ -1,0 +1,18 @@
+{
+  "name": "html-simple-pgp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OpenPGP for GnuPG and Kleopatra in one HTML file, every line of the cryptography in this repository",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "node --disable-warning=ExperimentalWarning build.mjs",
+    "test": "node --disable-warning=ExperimentalWarning --test --test-reporter=dot \"tests/**/*.test.ts\"",
+    "test:browser": "node tests/browser.mjs",
+    "check": "node --run test && node --run build && node --run test:browser",
+    "bench": "node --disable-warning=ExperimentalWarning tools/bench.ts"
+  }
+}

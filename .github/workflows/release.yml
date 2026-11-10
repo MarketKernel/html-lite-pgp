@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, check and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The tag must be there for the build to call itself by the release's version.
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      # The version lives in package.json only.
+      - name: Check that the tag is package.json's version
+        run: |
+          VERSION="v$(node -p "require('./package.json').version")"
+          if [ "$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::The tag is $GITHUB_REF_NAME but package.json has $VERSION"
+            exit 1
+          fi
+
+      - run: node --run check
+        env:
+          CHROME: /usr/bin/google-chrome
+
+      - name: Build twice, the same bytes
+        run: |
+          cp build/html-simple-pgp.html /tmp/first.html
+          node --run build
+          cmp /tmp/first.html build/html-simple-pgp.html
+
+      - name: Package
+        run: |
+          mkdir dist
+          cp build/html-simple-pgp.html "dist/html-simple-pgp-$GITHUB_REF_NAME.html"
+          ( cd dist && sha256sum ./*.html > SHA256SUMS.txt )
+          cat dist/SHA256SUMS.txt
+
+      # gh comes with the runner: no third-party action between the build and the release.
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes "One file, nothing else needed. Check it: \`sha256sum -c SHA256SUMS.txt\`, or build it again from this tag (\`node --run build\`) — the bytes are the same."

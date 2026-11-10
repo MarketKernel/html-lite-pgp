@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="{{CSP}}">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="version" content="{{VERSION}}">
+<title>Simple PGP</title>
+<link rel="icon" href="{{ICON}}">
+<style>{{STYLE}}</style>
+{{PWAHEAD}}
+</head>
+<body data-view="keys">
+
+<div id="app" class="app">
+  <nav class="sidebar" aria-label="Sections" data-i18n-attr="nav">
+    <div class="brand">
+      <img class="brand-logo" src="{{ICON}}" alt="">
+      <span class="brand-name">Simple PGP</span>
+    </div>
+    <button class="nav-item" type="button" data-view="keys">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>
+      <span class="nav-label" data-i18n="nav">Keys</span>
+      <span id="nav-count" class="nav-count"></span>
+    </button>
+    <button class="nav-item" type="button" data-view="notepad">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M9 13h6M9 17h4M14 3v5h5"/></svg>
+      <span class="nav-label" data-i18n="nav">Notepad</span>
+    </button>
+    <button class="nav-item" type="button" data-view="files">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <span class="nav-label" data-i18n="nav">Files</span>
+    </button>
+    <span class="nav-spacer"></span>
+    <div id="container-bar" class="container-bar" hidden>
+      <span id="container-name" class="container-name"></span>
+      <span id="container-state" class="container-state"></span>
+      <button id="container-save" class="button button--small" type="button" data-i18n="container">Save</button>
+    </div>
+    <button id="forget" class="nav-item nav-item--forget" type="button" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+      <span class="nav-label" data-i18n="nav">Forget passphrases</span>
+    </button>
+    <button class="nav-item" type="button" data-view="settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      <span class="nav-label" data-i18n="nav">Settings</span>
+    </button>
+    <p class="nav-version" data-i18n="nav">Version <span id="version" data-slot="version"></span></p>
+  </nav>
+
+  <main class="main">
+    <!-- Keys -->
+    <section id="view-keys" class="view view-keys" aria-label="Keys" data-i18n-attr="nav">
+      <header class="toolbar">
+        <button id="new-key" class="button button--primary button--small" type="button" title="New key pair (⇧⌘N)" data-i18n-attr="keys">
+          <span class="toolbar-plus" aria-hidden="true">+</span> <span class="toolbar-label" data-i18n="keys">New key pair</span>
+        </button>
+        <button id="import" class="button button--small" type="button" title="Import (⇧⌘I)" data-i18n-attr="keys" aria-haspopup="menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+          <span class="toolbar-label" data-i18n="keys">Import</span>
+        </button>
+        <button id="export" class="button button--small" type="button" title="Export the selected public keys" data-i18n-attr="keys" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></svg>
+          <span class="toolbar-label" data-i18n="keys">Export</span>
+        </button>
+        <div class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search" type="search" placeholder="Search name, email, key ID" aria-label="Search keys" data-i18n-attr="keys" autocomplete="off" spellcheck="false">
+        </div>
+        <select id="filter" class="toolbar-select" aria-label="Show" data-i18n-attr="keys">
+          <option value="all" data-i18n="keys">All keys</option>
+          <option value="mine" data-i18n="keys">My key pairs</option>
+          <option value="verified" data-i18n="keys">Verified</option>
+          <option value="unverified" data-i18n="keys">Not verified</option>
+          <option value="unusable" data-i18n="keys">Expired or revoked</option>
+        </select>
+      </header>
+
+      <div class="panes">
+        <div class="list-pane">
+          <div id="keys-table" class="key-table" role="grid" aria-label="Keys" data-i18n-attr="nav">
+            <div class="key-row key-row--head" role="row">
+              <span class="key-cell key-cell--name" role="columnheader" data-i18n="keys">Name</span>
+              <span class="key-cell key-cell--email" role="columnheader" data-i18n="keys">Email</span>
+              <span class="key-cell key-cell--status" role="columnheader" data-i18n="keys">Validity</span>
+              <span class="key-cell key-cell--date" role="columnheader" data-i18n="keys">Expires</span>
+              <span class="key-cell key-cell--id" role="columnheader" data-i18n="keys">Key ID</span>
+            </div>
+            <div id="key-rows" class="key-rows" tabindex="0" role="rowgroup"></div>
+            <p id="keys-none" class="keys-none" data-i18n="keys" hidden>No keys match.</p>
+            <p id="keys-count" class="keys-count"></p>
+          </div>
+
+          <div id="container-gate" class="empty" hidden>
+            <img class="empty-logo" src="{{ICON}}" alt="">
+            <h1 data-i18n="container">Your keys are in a container</h1>
+            <p class="empty-copy" data-i18n="container">Open the container file with its password. The keys stay in this page only while it is open.</p>
+            <div class="empty-buttons">
+              <button id="gate-remembered" class="button button--primary" type="button" hidden></button>
+              <button id="gate-open" class="button" type="button" data-i18n="container">Open a container…</button>
+              <button id="gate-new" class="button" type="button" data-i18n="container">Start a new container</button>
+              <button id="gate-browser" class="button button--ghost" type="button" data-i18n="container">Keep keys in this browser instead</button>
+            </div>
+          </div>
+
+          <div id="keys-empty" class="empty" hidden>
+            <img class="empty-logo" src="{{ICON}}" alt="">
+            <h1 data-i18n="welcome">Your keyring is empty</h1>
+            <p class="empty-copy" data-i18n="welcome">
+              Create a key pair to receive encrypted messages and to sign what you send, or import Curve25519 keys
+              you already have — from GnuPG or Kleopatra.
+            </p>
+            <div class="empty-buttons">
+              <button id="empty-new" class="button button--primary" type="button" data-i18n="welcome">Create a key pair</button>
+              <button id="empty-import" class="button" type="button" data-i18n="welcome">Import keys</button>
+              <button id="empty-restore" class="button" type="button" data-i18n="welcome">Restore from a phrase</button>
+            </div>
+            <p class="empty-note" data-i18n="welcome">
+              Everything happens in this page, with its own cryptography. Nothing is sent anywhere: the page has no network access at all.
+            </p>
+          </div>
+        </div>
+
+        <aside class="details-pane" aria-label="Key details" data-i18n-attr="keys">
+          <div id="details" class="details-scroller" hidden></div>
+          <div id="details-placeholder" class="placeholder">
+            <p data-i18n="keys">Select a key to see its details.</p>
+          </div>
+        </aside>
+      </div>
+      <input id="key-picker" type="file" accept=".asc,.gpg,.pgp,.key,.pub,.sec,.rev,.txt,application/pgp-keys" multiple hidden>
+    </section>
+
+    <!-- Notepad -->
+    <section id="view-notepad" class="view view-notepad" aria-label="Notepad" data-i18n-attr="nav" hidden>
+      <header class="toolbar">
+        <h1 class="toolbar-title" data-i18n="nav">Notepad</h1>
+        <span class="toolbar-spacer"></span>
+        <button id="np-paste" class="icon-button" type="button" title="Paste from the clipboard" data-i18n-attr="notepad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3h6v1M9 9h6M9 13h6M9 17h4"/></svg>
+        </button>
+        <button id="np-copy" class="icon-button" type="button" title="Copy all" data-i18n-attr="notepad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+        </button>
+        <button id="np-save" class="icon-button" type="button" title="Save as a file" data-i18n-attr="notepad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l4 4v12H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M8 4v5h7M8 20v-6h8v6"/></svg>
+        </button>
+        <button id="np-clear" class="icon-button" type="button" title="Clear" data-i18n-attr="notepad">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>
+        </button>
+      </header>
+      <div class="notepad">
+        <div class="notepad-main">
+          <div id="np-result" class="np-result" hidden></div>
+          <textarea id="np-text" class="np-text mono" spellcheck="false" aria-label="Text" data-i18n-attr="notepad"
+                    placeholder="Type a message to encrypt or sign — or paste an encrypted or signed message to decrypt or verify it."></textarea>
+        </div>
+        <aside class="notepad-side">
+          <h2 class="side-title" data-i18n="notepad">Recipients</h2>
+          <div id="np-recipients"></div>
+          <label class="side-check"><input id="np-self" type="checkbox"> <span><span data-i18n="notepad">Encrypt to me too</span> <span id="np-self-name" class="side-muted"></span></span></label>
+          <label class="side-check"><input id="np-password" type="checkbox"> <span data-i18n="notepad">Encrypt with a password</span></label>
+          <h2 class="side-title" data-i18n="notepad">Sign as</h2>
+          <span id="np-signer-slot"></span>
+          <div class="side-actions">
+            <button id="np-encrypt" class="button button--primary" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+              <span>Encrypt</span>
+            </button>
+            <button id="np-sign" class="button" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17c3-1 4-9 6-9s-1 8 1 8 3-5 5-5 1 4 3 4 2-1 3-2"/><path d="M3 21h18"/></svg>
+              <span data-i18n="notepad">Sign only</span>
+            </button>
+            <button id="np-decrypt" class="button" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>
+              <span data-i18n="notepad">Decrypt / verify</span>
+            </button>
+          </div>
+          <p class="side-hint" data-i18n="notepad">⌘ Enter decrypts a message, or encrypts plain text.</p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Files -->
+    <section id="view-files" class="view view-files" aria-label="Files" data-i18n-attr="nav" hidden>
+      <header class="toolbar">
+        <h1 class="toolbar-title" data-i18n="nav">Files</h1>
+        <span class="toolbar-spacer"></span>
+        <button id="files-add" class="button button--small" type="button" data-i18n="files">Add files…</button>
+        <button id="files-clear" class="button button--small button--ghost" type="button" data-i18n="files">Clear the list</button>
+      </header>
+      <div class="files">
+        <div id="files-empty" class="dropzone">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M7 9l5-5 5 5M5 20h14"/></svg>
+          <p class="dropzone-title" data-i18n="files">Drop files here</p>
+          <p class="dropzone-copy" data-i18n="files">Sign or encrypt any file; decrypt or verify .gpg, .pgp, .asc and .sig files; import keys.</p>
+          <button id="files-choose" class="button button--primary button--small" type="button" data-i18n="files">Choose files</button>
+        </div>
+        <ul id="files-list" class="file-list"></ul>
+        <div id="files-bar" class="files-bar" hidden>
+          <button id="files-protect" class="button button--small button--primary" type="button" data-i18n="files">Sign / encrypt…</button>
+          <button id="files-open" class="button button--small" type="button" data-i18n="files">Decrypt / verify</button>
+          <button id="files-import" class="button button--small" type="button" data-i18n="files">Import keys</button>
+          <button id="files-save-all" class="button button--small" type="button" data-i18n="files">Save all</button>
+        </div>
+      </div>
+      <input id="files-picker" type="file" multiple hidden>
+    </section>
+
+    <!-- Settings -->
+    <section id="view-settings" class="view view-settings" aria-label="Settings" data-i18n-attr="nav" hidden>
+      <header class="toolbar">
+        <h1 class="toolbar-title" data-i18n="nav">Settings</h1>
+      </header>
+      <div id="settings-body" class="settings"></div>
+    </section>
+  </main>
+</div>
+
+<div class="drop-hint" aria-hidden="true"><span data-i18n="files">Drop to open</span></div>
+
+<script>{{SCRIPT}}</script>
+</body>
+</html>

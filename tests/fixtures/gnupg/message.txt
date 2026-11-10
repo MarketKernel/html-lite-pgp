@@ -1,0 +1,4 @@
+Привет, Carol! The meeting is at 10.
+Вторая строка с пробелом в конце   
+-- 
+Dash line
