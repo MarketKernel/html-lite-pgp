@@ -10,7 +10,7 @@ import { applyRevocation, fingerprintHex, makeCert, revocationSignature, withExp
 import type { Cert, KeyPacket } from '../src/core/keys.ts';
 import { protectAll, secretsElsewhere } from '../src/core/secret.ts';
 import type { Secret } from '../src/core/secret.ts';
-import { GPG, withGnupg } from './gpg.ts';
+import { GPG, ON_GITHUB, withGnupg } from './gpg.ts';
 import { signCleartext, signData, wrapSignature } from '../src/core/verify.ts';
 import { encryptMessage } from '../src/core/message.ts';
 import { generate } from '../src/core/generate.ts';
@@ -136,7 +136,9 @@ test('GnuPG checks our clear-signed texts and detached signatures', { skip: !GPG
   });
 });
 
-test('GnuPG decrypts our messages — to our key, signed, and by password — and checks the signature', { skip: !GPG && 'no gpg' }, async () => {
+// On GitHub's runners gpg answers "Bad passphrase" for our imported key here, while GnuPG 2.5
+// takes the same key and passphrase.
+test('GnuPG decrypts our messages — to our key, signed, and by password — and checks the signature', { skip: (!GPG && 'no gpg') || ON_GITHUB }, async () => {
   const { seed, pub, sec } = await ourKey('пароль');
   const signer = { cert: pub, key: pub.primary, seed };
   const to = { cert: pub, key: pub.subkeys[0].key };

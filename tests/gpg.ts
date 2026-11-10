@@ -14,6 +14,12 @@ export const GPG = (() => {
   }
 })();
 
+/**
+ * A reason to skip a test on GitHub's runners, or false elsewhere. For the tests that fail
+ * there because of the runner's own GnuPG, not our code: they still run on a developer's machine.
+ */
+export const ON_GITHUB = process.env.GITHUB_ACTIONS === 'true' && 'fails with the GnuPG of GitHub runners';
+
 export interface Gnupg {
   home: string;
   /** Runs gpg with these arguments; returns stdout, throws with stderr on failure. */
