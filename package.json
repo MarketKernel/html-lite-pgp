@@ -1,6 +1,6 @@
 {
   "name": "html-simple-pgp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "OpenPGP for GnuPG and Kleopatra in one HTML file, every line of the cryptography in this repository",
   "license": "MIT",
