@@ -75,7 +75,9 @@ test('GnuPG imports our key: algorithms, usage, expiry, preferences', { skip: !G
   });
 });
 
-test('GnuPG unlocks our protected secret key and signs with it', { skip: !GPG && 'no gpg' }, async () => {
+// Skipped on GitHub (ON_GITHUB): there gpg-agent does not unlock our Cv25519 subkey ("Bad
+// passphrase", or asks for it again), though GnuPG 2.4.4 on the same Ubuntu 24.04 and 2.5 do.
+test('GnuPG unlocks our protected secret key and signs with it', { skip: (!GPG && 'no gpg') || ON_GITHUB }, async () => {
   const { sec } = await ourKey('пароль ключа');
   withGnupg((g) => {
     g.run(['--import'], armor('PRIVATE KEY BLOCK', writeCert(sec, { secret: true })));
@@ -136,8 +138,7 @@ test('GnuPG checks our clear-signed texts and detached signatures', { skip: !GPG
   });
 });
 
-// On GitHub's runners gpg answers "Bad passphrase" for our imported key here, while GnuPG 2.5
-// takes the same key and passphrase.
+// Unlocks our Cv25519 subkey: skipped on GitHub, as above.
 test('GnuPG decrypts our messages — to our key, signed, and by password — and checks the signature', { skip: (!GPG && 'no gpg') || ON_GITHUB }, async () => {
   const { seed, pub, sec } = await ourKey('пароль');
   const signer = { cert: pub, key: pub.primary, seed };
@@ -178,7 +179,8 @@ test('GnuPG takes a key made from a phrase like any other', { skip: !GPG && 'no 
   });
 });
 
-test('the container: GnuPG opens ours and imports the keys; we open what gpg -c made of an export', { skip: !GPG && 'no gpg' }, async () => {
+// Unlocks our Cv25519 subkey: skipped on GitHub, as above.
+test('the container: GnuPG opens ours and imports the keys; we open what gpg -c made of an export', { skip: (!GPG && 'no gpg') || ON_GITHUB }, async () => {
   const { sec } = await ourKey('ключ');
   const password = 'пять разных слов для контейнера';
   const container = await writeContainer([sec], password, random, now());
